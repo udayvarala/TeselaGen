@@ -33,11 +33,17 @@ var visualizeTheSequence = function(response)
                    .attr('stroke', 'black')
                    .attr('fill', 'white');
 
-    var text = svg.append('text')
-                    .attr('dx', cx - cr + 20 ).
-                    attr('dy', cy)
+    var centerText = svg.append('text')
+                    .attr('dx', cx - cr + 20 )
+                    .attr('dy', cy - 10)
                     .text(function(){
                         return response.sequence;  
+                    });
+                svg.append('text')
+                    .attr('dx', cx - cr + 40 )
+                    .attr('dy', cy + 10)
+                    .text(function(){
+                        return "Sequence Length is : " + response.sequenceLength;  
                     });
 
     var baseLine = svg.append('line')
@@ -53,15 +59,20 @@ var visualizeTheSequence = function(response)
 
     var baseText = svg.append('text')
                 .attr('dx', cx + cr + 15 )
-                .attr('dy', cy)
+                .attr('dy', cy + 3)
+                .attr("stroke", "blue")
                 .text(function(){
-                    return "0 bp - Base Line  0 degrees"  ;
+                    return "0 bp - (Base Line  0 degrees)"  ;
                 })
                 .attr('transform', function(d)
                 {
                     return "rotate(-90 " + " " + cx + "," + cy + ")";
                 });
-    
+
+
+    /**
+    * Using Basic SVG  syntax...
+
     for (var i = 0; i <response.features.length ; i++)                
     {
 
@@ -87,4 +98,34 @@ var visualizeTheSequence = function(response)
                             return "rotate(" + ( -90 + (feature.index/ response.sequenceLength) * 360) + " " +cx +"," + cy + ")";
                         });
     }
+
+    **/
+
+
+    // Using example shown at : http://bl.ocks.org/ChrisJamesC/4474971
+
+    var elem = svg.selectAll("g myCircleText")
+               .data(response.features);
+
+    var elemEnter = elem.enter()
+                .append("g")
+                .attr("transform", function(data){
+                    return "rotate(" + ( -90 + (data.index/ response.sequenceLength) * 360) + " " +cx +"," + cy + ")";
+                });
+
+
+    /* Create the "Line Indicator" and Text for each block */
+    var line = elemEnter.append("line")
+               .attr('x1', cx + cr- 12) 
+               .attr('y1', cy)
+               .attr('x2', cx + cr + 12)
+               .attr('y2', cy)
+               .attr("stroke", "black")
+    elemEnter.append("text")
+            .attr('dx', cx + cr + 15 )
+            .attr('dy', cy + 3)
+            .attr('fill', 'blue')  
+            .text(function(data){
+                return data.name  + " (Index :"+data.index+ ")";
+            });
 }
