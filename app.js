@@ -107,7 +107,7 @@ var visualizeTheSequence = function(response)
     var elem = svg.selectAll("g myCircleText")
                .data(response.features);
 
-    var elemEnter = elem.enter()
+    var transformGroup = elem.enter()
                 .append("g")
                 .attr("transform", function(data){
                     return "rotate(" + ( -90 + (data.index/ response.sequenceLength) * 360) + " " +cx +"," + cy + ")";
@@ -115,13 +115,13 @@ var visualizeTheSequence = function(response)
 
 
     /* Create the "Line Indicator" and Text for each block */
-    var line = elemEnter.append("line")
+    var line = transformGroup.append("line")
                .attr('x1', cx + cr- 12) 
                .attr('y1', cy)
                .attr('x2', cx + cr + 12)
                .attr('y2', cy)
                .attr("stroke", "black")
-    elemEnter.append("text")
+    transformGroup.append("text")
             .attr('dx', cx + cr + 15 )
             .attr('dy', cy + 3)
             .attr('fill', 'blue')  
